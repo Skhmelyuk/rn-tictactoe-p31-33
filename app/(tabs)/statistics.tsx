@@ -1,16 +1,26 @@
-import { useGame } from "@/context/GameContext";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { useQuery, useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function StatisticsScreen() {
   // Отримуємо реальні дані та функцію очищення з контексту
-  const { stats, resetStats } = useGame();
+
+  const stats = useQuery(api.stats.getStats);
+  const resetStats = useMutation(api.stats.resetStats);
+
+  const currentStats = stats ?? {
+    totalGames: 0,
+    winsX: 0,
+    winsO: 0,
+    draws: 0,
+  };
 
   const handleResetStats = () => {
     resetStats();
@@ -24,28 +34,28 @@ export default function StatisticsScreen() {
         {/* Картка 1: Загальна кількість */}
         <View style={[styles.card, styles.cardTotal]}>
           <MaterialIcons name="videogame-asset" size={32} color="#4b5563" />
-          <Text style={styles.cardNumber}>{stats.totalGames}</Text>
+          <Text style={styles.cardNumber}>{currentStats.totalGames}</Text>
           <Text style={styles.cardLabel}>Зіграно партій</Text>
         </View>
 
         {/* Картка 2: Перемоги X */}
         <View style={[styles.card, styles.cardX]}>
           <Text style={styles.playerBadgeX}>X</Text>
-          <Text style={styles.cardNumber}>{stats.winsX}</Text>
+          <Text style={styles.cardNumber}>{currentStats.winsX}</Text>
           <Text style={styles.cardLabel}>Перемог X</Text>
         </View>
 
         {/* Картка 3: Перемоги O */}
         <View style={[styles.card, styles.cardO]}>
           <Text style={styles.playerBadgeO}>O</Text>
-          <Text style={styles.cardNumber}>{stats.winsO}</Text>
+          <Text style={styles.cardNumber}>{currentStats.winsO}</Text>
           <Text style={styles.cardLabel}>Перемог O</Text>
         </View>
 
         {/* Картка 4: Нічиї */}
         <View style={[styles.card, styles.cardDraw]}>
           <MaterialIcons name="handshake" size={32} color="#f59e0b" />
-          <Text style={styles.cardNumber}>{stats.draws}</Text>
+          <Text style={styles.cardNumber}>{currentStats.draws}</Text>
           <Text style={styles.cardLabel}>Нічиїх</Text>
         </View>
       </View>

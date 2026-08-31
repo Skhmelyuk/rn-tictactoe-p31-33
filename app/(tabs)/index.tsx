@@ -6,13 +6,15 @@ import type { BoardState, Player } from "@/types";
 import { checkWinner } from "@/utils/utilsGame";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useMutation } from "convex/react";
+import { api } from "@/convex/_generated/api";
 
 export default function GameScreen() {
   const [cells, setCells] = useState<BoardState>(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
 
   // Отримуємо функцію фіксації результату з контексту
-  const { recordGameResult } = useGame();
+  const recordGameResult = useMutation(api.stats.recordGameResult);
 
   // Прапорець, щоб зараховувати результат гри лише 1 раз за партію
   const gameRecordedRef = useRef(false);
@@ -25,10 +27,10 @@ export default function GameScreen() {
   // Автоматичний запис результату при завершенні партії
   useEffect(() => {
     if (winner && !gameRecordedRef.current) {
-      recordGameResult(winner);
+      recordGameResult({ result: winner });
       gameRecordedRef.current = true;
     } else if (isDraw && !gameRecordedRef.current) {
-      recordGameResult("DRAW");
+      recordGameResult({ result: "DRAW" });
       gameRecordedRef.current = true;
     }
   }, [winner, isDraw]);
