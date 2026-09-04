@@ -1,24 +1,28 @@
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
+import { useTheme } from "@/context/ThemeContext";
+import { Platform } from "react-native";
 
 export default function TabsLayout() {
+  const { colors } = useTheme();
+
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: "#007bff",
-        tabBarInactiveTintColor: "#8e8e8e",
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: {
-          backgroundColor: "#ffffff",
-          height: 80,
+          backgroundColor: colors.surface,
+          height: Platform.OS === "ios" ? 88 : 68,
           paddingTop: 8,
-          paddingBottom: 10,
+          paddingBottom: Platform.OS === "ios" ? 28 : 10,
           borderTopWidth: 1,
-          borderTopColor: "#e0e0e0",
+          borderTopColor: colors.border,
           elevation: 8,
-          shadowColor: "#000",
+          shadowColor: colors.cardShadow,
           shadowOffset: { width: 0, height: -2 },
-          shadowOpacity: 0.06,
+          shadowOpacity: 0.1,
           shadowRadius: 4,
         },
         tabBarLabelStyle: {

@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import type { CellValue, Player } from "@/types";
+import { useTheme, ThemeColors } from "@/context/ThemeContext";
 
 interface StatusProps {
   player: Player;
@@ -8,6 +9,9 @@ interface StatusProps {
 }
 
 export function Status({ player, winner, isDraw }: StatusProps) {
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
+
   if (winner) {
     return (
       <View style={styles.turn}>
@@ -42,31 +46,32 @@ export function Status({ player, winner, isDraw }: StatusProps) {
   );
 }
 
-const styles = StyleSheet.create({
-  turn: {
-    marginBottom: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: "#fff",
-    borderRadius: 30,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 15,
-    elevation: 3, // для android тіні
-    alignSelf: "center",
-  },
-  turnText: {
-    fontSize: 18,
-    color: "#34495e",
-    fontWeight: "500",
-  },
-  xMark: {
-    color: "#e74c3c",
-    fontWeight: "bold",
-  },
-  oMark: {
-    color: "#007bff",
-    fontWeight: "bold",
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    turn: {
+      marginBottom: 20,
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      backgroundColor: colors.surface,
+      borderRadius: 30,
+      shadowColor: colors.cardShadow,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 15,
+      elevation: 3,
+      alignSelf: "center",
+    },
+    turnText: {
+      fontSize: 18,
+      fontWeight: "500",
+      color: colors.text,
+    },
+    xMark: {
+      color: colors.xMark,
+      fontWeight: "bold",
+    },
+    oMark: {
+      color: colors.oMark,
+      fontWeight: "bold",
+    },
+  });

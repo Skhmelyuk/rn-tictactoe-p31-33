@@ -8,10 +8,14 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { useTheme, ThemeColors } from "@/context/ThemeContext";
 
 export default function GameScreen() {
   const [cells, setCells] = useState<BoardState>(Array(9).fill(null));
   const [currentPlayer, setCurrentPlayer] = useState<Player>("X");
+
+  const { colors } = useTheme();
+  const styles = createStyles(colors);
 
   // Отримуємо функцію фіксації результату з контексту
   const recordGameResult = useMutation(api.stats.recordGameResult);
@@ -79,37 +83,38 @@ export default function GameScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  game: {
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 1,
-    backgroundColor: "#f0f2f5",
-  },
-  board: {
-    width: 290,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-    gap: 10,
-    marginVertical: 10,
-  },
-  resetButton: {
-    marginTop: 20,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    backgroundColor: "#007bff",
-    borderRadius: 8,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  resetText: {
-    color: "#ffffff",
-    fontSize: 16,
-    fontWeight: "600",
-    textAlign: "center",
-  },
-});
+const createStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    game: {
+      alignItems: "center",
+      justifyContent: "center",
+      backgroundColor: colors.bg,
+      flex: 1,
+    },
+    board: {
+      width: 290,
+      flexDirection: "row",
+      flexWrap: "wrap",
+      justifyContent: "space-between",
+      gap: 10,
+      marginVertical: 10,
+    },
+    resetButton: {
+      marginTop: 20,
+      paddingVertical: 12,
+      paddingHorizontal: 24,
+      backgroundColor: colors.primary,
+      borderRadius: 8,
+      shadowColor: colors.cardShadow,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    resetText: {
+      color: "#FFFFFF",
+      fontSize: 16,
+      fontWeight: "600",
+      textAlign: "center",
+    },
+  });
