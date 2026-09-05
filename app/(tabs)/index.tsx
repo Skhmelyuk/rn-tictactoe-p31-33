@@ -1,14 +1,13 @@
 import { Cell } from "@/components/Cell";
 import { Status } from "@/components/Status";
 import { TitleGame } from "@/components/TitleGame";
-import { useGame } from "@/context/GameContext";
+import { ThemeColors, useTheme } from "@/context/ThemeContext";
+import { api } from "@/convex/_generated/api";
 import type { BoardState, Player } from "@/types";
 import { checkWinner } from "@/utils/utilsGame";
+import { useMutation } from "convex/react";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { useMutation } from "convex/react";
-import { api } from "@/convex/_generated/api";
-import { useTheme, ThemeColors } from "@/context/ThemeContext";
 
 export default function GameScreen() {
   const [cells, setCells] = useState<BoardState>(Array(9).fill(null));
@@ -18,7 +17,7 @@ export default function GameScreen() {
   const styles = createStyles(colors);
 
   // Отримуємо функцію фіксації результату з контексту
-  const recordGameResult = useMutation(api.stats.recordGameResult);
+  const recordGame = useMutation(api.games.recordGame);
 
   // Прапорець, щоб зараховувати результат гри лише 1 раз за партію
   const gameRecordedRef = useRef(false);
@@ -31,13 +30,20 @@ export default function GameScreen() {
   // Автоматичний запис результату при завершенні партії
   useEffect(() => {
     if (winner && !gameRecordedRef.current) {
-      recordGameResult({ result: winner });
+      recordGame({
+        winner,
+        board: cells,
+        winningCombination: winnerCombination,
+      });
       gameRecordedRef.current = true;
     } else if (isDraw && !gameRecordedRef.current) {
-      recordGameResult({ result: "DRAW" });
+      recordGame({
+        winner: "DRAW",
+        board: cells,
+      });
       gameRecordedRef.current = true;
     }
-  }, [winner, isDraw]);
+  }, [winner, isDraw, cells, recordGame]);
 
   const handleCellClick = (index: number): void => {
     if (cells[index] || winner || isDraw) {

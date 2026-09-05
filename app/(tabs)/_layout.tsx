@@ -1,6 +1,6 @@
+import { useTheme } from "@/context/ThemeContext";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Tabs } from "expo-router";
-import { useTheme } from "@/context/ThemeContext";
 import { Platform } from "react-native";
 
 export default function TabsLayout() {
@@ -47,6 +47,15 @@ export default function TabsLayout() {
           title: "Статистика",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="leaderboard" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="history"
+        options={{
+          title: "Історія",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="history" size={size} color={color} />
           ),
         }}
       />
