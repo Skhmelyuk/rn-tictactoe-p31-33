@@ -5,14 +5,19 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Alert,
 } from "react-native";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { ThemeColors, useTheme } from "@/context/ThemeContext";
 import { Switch } from "react-native";
+import { useAuthActions } from "@convex-dev/auth/react";
+import { useRouter } from "expo-router";
 
 export default function StatisticsScreen() {
-  // Отримуємо реальні дані та функцію очищення з контексту
+  const { signOut } = useAuthActions();
+  const router = useRouter();
+  const user = useQuery(api.users.currentUser);
 
   const stats = useQuery(api.stats.getStats);
   const resetStats = useMutation(api.stats.resetStats);
@@ -27,6 +32,20 @@ export default function StatisticsScreen() {
     draws: 0,
   };
 
+  const handleSignOut = () => {
+  Alert.alert("Вихід з акаунта", "Ви впевнені, що хочете вийти з гри?", [
+    { text: "Скасувати", style: "cancel" },
+    {
+      text: "Вийти",
+      style: "destructive",
+      onPress: async () => {
+        await signOut();
+        router.replace("/sign-in");
+      },
+    },
+  ]);
+};
+
   const handleResetStats = () => {
     resetStats();
   };
@@ -34,6 +53,23 @@ export default function StatisticsScreen() {
   return (
     <ScrollView contentContainerStyle={styles.content}>
       <Text style={styles.title}>Статистика ігор</Text>
+
+      <View style={styles.userCard}>
+  <View style={styles.userAvatar}>
+    <MaterialIcons name="sports-esports" size={28} color="#FFFFFF" />
+  </View>
+  <View style={styles.userInfo}>
+    <Text style={styles.userName}>{user?.name ?? "Гравець"}</Text>
+    <Text style={styles.userEmail}>{user?.email ?? ""}</Text>
+  </View>
+  <TouchableOpacity
+    style={styles.signOutBtn}
+    onPress={handleSignOut}
+    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+  >
+    <MaterialIcons name="logout" size={22} color={colors.textMuted} />
+  </TouchableOpacity>
+</View> 
 
       <View style={styles.themeCard}>
         <View style={styles.themeInfo}>
@@ -211,5 +247,46 @@ const createStyles = (colors: ThemeColors) =>
       color: "#FFFFFF",
       fontSize: 15,
       fontWeight: "600",
+    },
+    userCard: {
+      width: "100%",
+      flexDirection: "row",
+      alignItems: "center",
+      padding: 20,
+      borderRadius: 16,
+      borderWidth: 1,
+      borderColor: colors.border,
+      backgroundColor: colors.surface,
+      gap: 16,
+      marginBottom: 24,
+      elevation: 3,
+      shadowColor: colors.cardShadow,
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.06,
+      shadowRadius: 6,
+    },
+    userAvatar: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+      backgroundColor: colors.primary,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    userInfo: {
+      flex: 1,
+    },
+    userName: {
+      fontSize: 18,
+      fontWeight: "700",
+      color: colors.text,
+    },
+    userEmail: {
+      fontSize: 14,
+      color: colors.textMuted,
+      marginTop: 2,
+    },
+    signOutBtn: {
+      padding: 8,
     },
   });

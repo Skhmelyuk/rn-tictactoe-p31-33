@@ -1,9 +1,9 @@
 import { ConfigContext, ExpoConfig } from "expo/config";
 
 // EAS налаштування (замініть на ваш реальний EAS Project ID після виконання eas project:init)
-const EAS_PROJECT_ID = "e4924b71-c85d-4518-9094-8278ad3f9e6b"; // наприклад, "3137fc56-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+const EAS_PROJECT_ID = "e4924b71-c85d-4518-9094-8278ad3f9e6b";
 const PROJECT_SLUG = "tictactoe-p31";
-const OWNER = "skhmelyuk"; // Ваш Expo username
+const OWNER = "skhmelyuk";
 
 // Базова конфігурація Production
 const APP_NAME = "TicTacToe";
